@@ -3,6 +3,8 @@ const compression = require("compression");
 const cors = require("cors");
 const httpStatus = require("http-status");
 const routes = require("./routes/v1");
+const userroutes = require("./routes/v1/user.route");
+// const userroutes = require("./routes/")
 const { errorHandler } = require("./middlewares/error");
 const ApiError = require("./utils/ApiError");
 
