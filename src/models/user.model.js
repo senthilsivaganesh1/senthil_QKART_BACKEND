@@ -52,7 +52,7 @@ const userSchema = mongoose.Schema(
  */
 userSchema.statics.isEmailTaken = async function (email) {
   const user = await this.findOne({email});
-  return !!user;
+  return user;
 };
 
 

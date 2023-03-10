@@ -11,7 +11,8 @@ const bcrypt = require("bcryptjs");
  * @returns {Promise<User>}
  */
  const getUserById = async (id) => {
-      const result = await User.findById(id);
+      const result = await User.findOne({"_id":id});
+      console.log(result,"userById")
       return result;
 
   }; 
@@ -56,21 +57,32 @@ const bcrypt = require("bcryptjs");
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
  const createUser = async (user) => {
-    if(User.isEmailTaken(user.email)){
+    if(await User.isEmailTaken(user.email)){
 
         
         throw new ApiError(httpStatus.OK, "\"\"userId\"\" must be a valid mongo id")
 
     }
-    // const { name, email, password } = user;
-    try {
-        const { name, email, password } = user;
-      const newUser = new User({ name, email, password });
-      const result = await newUser.save();
-      return result;
-    } catch (error) {
-      throw error;
+    if(!user.email){
+      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"email\"\" email is required")
     }
+    if(!user.name){
+      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"name\"\" name is required")
+    }
+    if(!user.password){
+      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"password\"\" password is required")
+    }
+    // const { name, email, password } = user;
+    // try {
+    //     const { name, email, password } = user;
+    //   const newUser = new User({ name, email, password });
+    //   const result = await newUser.save();
+    //   return result;
+    // } catch (error) {
+    //   throw error;
+    // }
+    const Createduser = await User.create({...user});
+    return Createduser
   };
 
   module.exports = {
