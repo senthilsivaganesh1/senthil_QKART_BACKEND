@@ -27,15 +27,16 @@ const bcrypt = require("bcryptjs");
  * @returns {Promise<User>}
  */
  const getUserByEmail = async (email) => {
-    try {
+    // try {
       const result = await User.findOne({ email });
+      console.log("result..",result);
       if(!result || result==null){
         throw new ApiError(httpStatus.UNAUTHORIZED, "Email not found");
       }
       return result;
-    } catch (error) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user");    
-    }
+    // } catch (error) {
+    //   throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user");    
+    // }
   }; 
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement createUser(user)
