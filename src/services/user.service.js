@@ -19,6 +19,7 @@ const bcrypt = require("bcryptjs");
 
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserByEmail(email)
+
 /**
  * Get user by email
  * - Fetch user object from Mongo using the "email" field and return user object
@@ -28,13 +29,17 @@ const bcrypt = require("bcryptjs");
  const getUserByEmail = async (email) => {
     try {
       const result = await User.findOne({ email });
+      if(!result || result==null){
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Email not found");
+      }
       return result;
     } catch (error) {
-      throw error;
+      throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user");    
     }
   }; 
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement createUser(user)
+
 /**
  * Create a user
  *  - check if the user with the email already exists using `User.isEmailTaken()` method
@@ -57,21 +62,30 @@ const bcrypt = require("bcryptjs");
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
  const createUser = async (user) => {
-    if(await User.isEmailTaken(user.email)){
+  const isEmailTaken = await User.isEmailTaken(user.email);
+  if (isEmailTaken) {
+    throw new ApiError(httpStatus.OK, "Email already taken");
+  } else {
+    // const hashedPassword = await bcrypt.hash(user.password, 10);
+    // const newDoc = await User.create({ ...user, password: hashedPassword });
+    const newDoc = await User.create(user);
+    return newDoc;
+  }
+    // if(await User.isEmailTaken(user.email)){
 
         
-        throw new ApiError(httpStatus.OK, "\"\"userId\"\" must be a valid mongo id")
+    //     throw new ApiError(httpStatus.OK, "\"\"userId\"\" must be a valid mongo id")
 
-    }
-    if(!user.email){
-      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"email\"\" email is required")
-    }
-    if(!user.name){
-      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"name\"\" name is required")
-    }
-    if(!user.password){
-      throw new ApiError(httpStatus.BAD_REQUEST, "\"\"password\"\" password is required")
-    }
+    // }
+    // if(!user.email){
+    //   throw new ApiError(httpStatus.BAD_REQUEST, "\"\"email\"\" email is required")
+    // }
+    // if(!user.name){
+    //   throw new ApiError(httpStatus.BAD_REQUEST, "\"\"name\"\" name is required")
+    // }
+    // if(!user.password){
+    //   throw new ApiError(httpStatus.BAD_REQUEST, "\"\"password\"\" password is required")
+    // }
     // const { name, email, password } = user;
     // try {
     //     const { name, email, password } = user;
@@ -81,8 +95,8 @@ const bcrypt = require("bcryptjs");
     // } catch (error) {
     //   throw error;
     // }
-    const Createduser = await User.create({...user});
-    return Createduser
+    // const Createduser = await User.create({...user});
+    // return Createduser
   };
 
   module.exports = {
@@ -91,4 +105,5 @@ const bcrypt = require("bcryptjs");
     createUser
   };
   
+
 
