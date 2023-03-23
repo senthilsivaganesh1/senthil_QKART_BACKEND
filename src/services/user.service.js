@@ -34,9 +34,7 @@ const bcrypt = require("bcryptjs");
         throw new ApiError(httpStatus.UNAUTHORIZED, "Email not found");
       }
       return result;
-    // } catch (error) {
-    //   throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user");    
-    // }
+    
   }; 
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement createUser(user)
