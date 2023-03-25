@@ -21,3 +21,9 @@ app.use("/v1/users", userRoutes);
   app.listen(config.port, () => {
     console.log("Server Listening at", config.port);
   });
+// const mongoose = require("mongoose");
+// const app = require("./app");
+// const config = require("./config/config");
+
+// let server;
+
