@@ -215,10 +215,115 @@ const deleteProductFromCart = async (user, productId) => {
   await cart.save();
 };
 
+// const deleteProductFromCart = async (user, productId) => {
+// };
+
+// TODO: CRIO_TASK_MODULE_TEST - Implement checkout function
+/**
+ * Checkout a users cart.
+ * On success, users cart must have no products.
+ *
+ * @param {User} user
+ * @returns {Promise}
+ * @throws {ApiError} when cart is invalid
+ */
+const checkout = async (user) => {
+  // let cart = await Cart.findOne({ email: user.email });
+  // if (!cart || cart==null) {
+  //   throw new ApiError(httpStatus.NOT_FOUND, "User does not have a cart");
+  // }
+  // // let productIndex = -1;
+  // // for (let i = 0; i < cart.cartItems.length; i++) {
+  // //   if (productId == cart.cartItems[i].product._id) {
+  // //     productIndex = i;
+  // //   }
+  // // }
+
+  // // If product not in cart, throw error. Otherwise, delete from cart.
+  // if (cart.cartItems.length==0) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "No Product in cart. ");
+  // }
+
+  // if(!user.hasSetNonDefaultAddress){
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "No default address set");
+  // }
+  // if(user.walletMoney == 0 ){
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "Insufficient balance");
+  // }
+  // // TODO - Test4
+  // let total = 0;
+  // for (let i = 0; i < cart.cartItems.length; i++) {
+  //   total += cart.cartItems[i].product.cost * cart.cartItems[i].quantity;
+  // }
+
+  // // if (total > user.walletMoney) {
+  // //   throw new ApiError(
+  // //     httpStatus.BAD_REQUEST,
+  // //     "User has insufficient money to process"
+  // //   );
+  // // }
+
+  // // TODO - Test 5
+  // user.walletMoney -= total;
+  // await user.save();
+
+  // cart.cartItems = [];
+  // await cart.save();
+  // TODO - Test1
+
+  // TODO - Test1
+
+  let cart = await Cart.findOne({ email: user.email });
+  
+  if (cart==null) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User does not have a cart");
+  }
+  
+  // TODO - Test2
+  
+  if (cart.cartItems.length === 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Cart is empty");
+  }
+ 
+  
+  // TODO - Test3
+  
+  let hasSetNonDefaultAddress = await user.hasSetNonDefaultAddress();
+ 
+  if (!hasSetNonDefaultAddress) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Address not set");
+  }
+  
+  // if (user.address == config.default_address) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "Address not set");
+  // }
+
+  // TODO - Test4
+  let total = 0;
+  for (let i = 0; i < cart.cartItems.length; i++) {
+    total += cart.cartItems[i].product.cost * cart.cartItems[i].quantity;
+  }
+
+  if (total > user.walletMoney) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "User has insufficient money to process"
+    );
+  }
+
+  // TODO - Test 5
+  user.walletMoney -= total;
+  await user.save();
+
+  cart.cartItems = [];
+  await cart.save();
+  
+};
 
 module.exports = {
   getCartByUser,
   addProductToCart,
   updateProductInCart,
   deleteProductFromCart,
+  checkout,
 };

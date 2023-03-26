@@ -107,8 +107,28 @@ const updateProductInCart = catchAsync(async (req, res) => {
 
 
 
+// const updateProductInCart = catchAsync(async (req, res) => {
+// });
+
+/**
+ * Checkout user's cart
+ */
+/**
+ * Checkout user's cart
+ */
+ const checkout = catchAsync(async (req, res) => {
+  await cartService.checkout(req.user);
+ 
+  return (
+    res
+      .status(httpStatus.NO_CONTENT)  //second test case for checkout.test.js
+      .send()
+  );
+});
+
 module.exports = {
   getCart,
   addProductToCart,
   updateProductInCart,
+  checkout,
 };
